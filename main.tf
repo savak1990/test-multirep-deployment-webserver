@@ -122,7 +122,7 @@ resource "aws_lb_target_group" "asg" {
 }
 
 resource "aws_autoscaling_group" "example" {
-  name                 = "${var.cluster_name}-${aws_launch_configuration.example.name}"
+  name                 = "${var.cluster_name}-asg"
   launch_configuration = aws_launch_configuration.example.name
   vpc_zone_identifier  = data.aws_subnets.default.ids
 
@@ -132,10 +132,11 @@ resource "aws_autoscaling_group" "example" {
   min_size = var.min_size
   max_size = var.max_size
 
-  min_elb_capacity = var.min_size
-
-  lifecycle {
-    create_before_destroy = true
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+    }
   }
 
   tag {
