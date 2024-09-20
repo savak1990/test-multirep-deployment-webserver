@@ -27,16 +27,6 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-data "terraform_remote_state" "db" {
-  backend = "s3"
-
-  config = {
-    bucket = var.db_remote_state_bucket
-    key    = var.db_remote_state_key
-    region = "eu-central-1"
-  }
-}
-
 resource "aws_security_group" "instance" {
   name = "${var.cluster_name}-instance"
 }
@@ -82,8 +72,8 @@ resource "aws_launch_configuration" "example" {
 
   user_data = templatefile("${path.module}/user_data.sh", {
     server_port = var.server_port
-    db_address  = data.terraform_remote_state.db.outputs.primary_address
-    db_port     = data.terraform_remote_state.db.outputs.primary_port
+    db_address  = var.db_address
+    db_port     = var.db_port
     server_text = var.server_text
   })
 

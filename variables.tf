@@ -15,13 +15,13 @@ variable "server_text" {
   default     = "Hello, World"
 }
 
-variable "db_remote_state_bucket" {
-  description = "The name of the S3 bucket for the database's remote state"
+variable "db_address" {
+  description = "DB address to be used"
   type        = string
 }
 
-variable "db_remote_state_key" {
-  description = "The path for the database's remote state in S3"
+variable "db_port" {
+  description = "DB port to be used"
   type        = string
 }
 
