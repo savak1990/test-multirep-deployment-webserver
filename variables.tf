@@ -9,12 +9,6 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "ami" {
-  description = "The AMI to run in the cluster"
-  type        = string
-  default     = "ami-06dd92ecc74fdfb36"
-}
-
 variable "server_text" {
   description = "The text to display in the web server"
   type        = string

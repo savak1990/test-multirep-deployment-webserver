@@ -17,6 +17,20 @@ data "aws_subnets" "default" {
   }
 }
 
+data "aws_region" "current" {}
+
+data "aws_ami" "amazon_linux" {
+  provider = aws_region.current
+
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
+
 data "terraform_remote_state" "db" {
   backend = "s3"
 
@@ -66,7 +80,7 @@ resource "aws_security_group_rule" "alb_allow_all_outbound" {
 }
 
 resource "aws_launch_configuration" "example" {
-  image_id        = var.ami
+  image_id        = data.aws_ami.amazon_linux.id
   instance_type   = var.instance_type
   security_groups = [aws_security_group.instance.id]
 
@@ -159,5 +173,14 @@ resource "aws_lb_listener_rule" "asg" {
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.asg.arn
+  }
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
   }
 }
