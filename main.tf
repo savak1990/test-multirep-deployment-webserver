@@ -18,8 +18,6 @@ data "aws_subnets" "default" {
 }
 
 data "aws_ami" "amazon_linux" {
-  provider = aws.current
-
   most_recent = true
   owners      = ["amazon"]
 
